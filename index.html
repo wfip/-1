@@ -2,11 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تحدي ركلات الجزاء: صاحب القرار</title>
+    <title>بلنتياات</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2c3e50;
+            background-color: #1a1a1a;
             color: white;
             text-align: center;
             margin: 0;
@@ -14,32 +14,32 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-
-        #game-setup-container {
-            width: 800px;
-            height: 600px;
-            background-image: url('https://i.imgur.com/8Q8oJj6.jpg'); /* صورة ملعب واقعي */
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            border: 10px solid #ecf0f1;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             overflow: hidden;
         }
 
-        /* المرمى والحارس */
-        #goal-area {
+        #game-container {
+            width: 800px;
+            height: 600px;
+            background-image: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 4px solid #333;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        #goal-net {
             position: absolute;
-            top: 25%;
+            top: 20%;
             left: 50%;
             transform: translateX(-50%);
-            width: 500px;
-            height: 300px;
-            border: 12px solid white;
+            width: 550px;
+            height: 280px;
+            border: 10px solid rgba(255, 255, 255, 0.9);
             border-bottom: none;
-            background-color: rgba(0,0,0,0.3);
+            background-color: rgba(0, 0, 0, 0.2);
         }
 
         #goalkeeper {
@@ -47,178 +47,226 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
-            height: auto;
-            content: url('https://i.imgur.com/T0bSg1M.png'); /* صورة حارس حقيقي */
+            width: 140px;
+            transition: left 0.3s ease-in-out;
+            content: url('https://i.imgur.com/T0bSg1M.png');
         }
 
-        /* الكرة */
         #penalty-ball {
             position: absolute;
-            bottom: 10%;
+            bottom: 12%;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            content: url('https://i.imgur.com/KzK6M0X.png'); /* صورة كرة واقعية */
+            width: 50px;
+            content: url('https://i.imgur.com/KzK6M0X.png');
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.6));
+            transition: all 0.4s ease-out;
         }
 
-        /* لوحة النتائج */
-        #result-display {
+        #scoreboard {
             position: absolute;
-            top: 10px;
+            top: 0;
             width: 100%;
-            font-size: 28px;
-            font-weight: bold;
-            background-color: rgba(0,0,0,0.6);
-            padding: 10px 0;
+            font-size: 22px;
+            font-weight: 600;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            padding: 20px 0;
         }
 
-        /* الإشعار المركزي المنبثق */
-        #central-popup {
-            display: none;
+        #turn-status {
+            font-size: 16px;
+            margin-top: 5px;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        /* نافذة آبل أركيد في منتصف الشاشة */
+        #arcade-popup {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #2c3e50;
-            padding: 20px 40px;
-            border-radius: 15px;
-            border: 5px solid #27ae60;
-            font-size: 32px;
-            font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 400px;
+            background: rgba(28, 28, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
             z-index: 100;
+            text-align: center;
+            box-sizing: border-box;
         }
 
-        #central-popup.failure {
-            border-color: #e74c3c;
+        #arcade-header {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        /* أزرار اتخاذ القرار */
-        #decision-panel {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
+        #arcade-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+
+        #arcade-message {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 24px;
+        }
+
+        #popup-buttons {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
-        .decision-btn {
-            background-color: #27ae60;
-            color: white;
+        .arcade-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
             border: none;
-            font-size: 20px;
-            padding: 15px 30px;
-            margin: 0 15px;
-            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            background-color: #ffffff;
+            color: #000000;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        .decision-btn.save {
-            background-color: #e74c3c;
+        .arcade-btn.side {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
         }
 
+        .arcade-btn.side:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .arcade-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-setup-container">
+    <div id="game-container">
         <!-- لوحة النتيجة -->
-        <div id="result-display">
-            السعودية: <span id="score-team1">0</span> | البرازيل: <span id="score-team2">0</span>
-            <br>
-            <span id="turn-indicator" style="font-size: 20px; color: #27ae60;">دوري: شوط</span>
+        <div id="scoreboard">
+            السعودية: <span id="score-1">0</span> &nbsp;|&nbsp; البرازيل: <span id="score-2">0</span>
+            <div id="turn-status">دوري: شوط</div>
         </div>
 
         <!-- المرمى والحارس -->
-        <div id="goal-area">
+        <div id="goal-net">
             <div id="goalkeeper"></div>
         </div>
 
-        <!-- الكرة -->
+        <!-- كرة القدم -->
         <div id="penalty-ball"></div>
 
-        <!-- إشعار القرار في المنتصف -->
-        <div id="central-popup">
-            <span id="popup-text">هدف يا لعيب!</span>
-        </div>
-
-        <!-- أزرار اتخاذ القرار -->
-        <div id="decision-panel">
-            <button class="decision-btn" onclick="makeDecision('goal')">هددددف!</button>
-            <button class="decision-btn save" onclick="makeDecision('save')">تصدي!</button>
+        <!-- إشعار القرار المركزي التفاعلي -->
+        <div id="arcade-popup">
+            <div id="arcade-header">Arcade</div>
+            <div id="arcade-title">بلنتياات</div>
+            <div id="arcade-message" id="popup-text">اختر زاوية التسديد لتركل الكرة</div>
+            
+            <div id="popup-buttons">
+                <button class="arcade-btn side" onclick="playAction('left')">يسار</button>
+                <button class="arcade-btn" onclick="playAction('center')">وسط</button>
+                <button class="arcade-btn side" onclick="playAction('right')">يمين</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let scoreTeam1 = 0;
-        let scoreTeam2 = 0;
-        let isShooter = true; // دور الفريق الأول تسديد
-        const turnIndicator = document.getElementById('turn-indicator');
-        const centralPopup = document.getElementById('central-popup');
-        const popupText = document.getElementById('popup-text');
+        let score1 = 0;
+        let score2 = 0;
+        let playerShootingTurn = true; 
+        let isWaitingForAction = true;
 
-        // وظيفة اتخاذ القرار - أنت صاحب القرار
-        function makeDecision(result) {
-            let message = "";
-            let isSuccess = false;
+        const ball = document.getElementById('penalty-ball');
+        const keeper = document.getElementById('goalkeeper');
+        const turnStatus = document.getElementById('turn-status');
+        const arcadePopup = document.getElementById('arcade-popup');
+        const arcadeMessage = document.getElementById('arcade-message');
+        const score1Display = document.getElementById('score-1');
+        const score2Display = document.getElementById('score-2');
 
-            // تحديد النتيجة والرسالة بناءً على الزر
-            if (isShooter) { // دوري: تسديد
-                if (result === 'goal') {
-                    scoreTeam1++;
-                    message = "هدف يا لعيب!";
-                    isSuccess = true;
+        const positions = { 'left': '30%', 'center': '50%', 'right': '70%' };
+        const ballPositions = { 'left': '38%', 'center': '50%', 'right': '62%' };
+
+        function playAction(playerChoice) {
+            if (!isWaitingForAction) return;
+            isWaitingForAction = false;
+
+            const options = ['left', 'center', 'right'];
+            const aiChoice = options[Math.floor(Math.random() * options.length)];
+
+            let shotLocation = playerShootingTurn ? playerChoice : aiChoice;
+            let keeperJump = playerShootingTurn ? aiChoice : playerChoice;
+
+            arcadePopup.style.display = 'none';
+
+            ball.style.bottom = '42%';
+            ball.style.left = ballPositions[shotLocation];
+            ball.style.width = '25px';
+            keeper.style.left = positions[keeperJump];
+
+            setTimeout(() => {
+                let isGoal = (shotLocation !== keeperJump);
+                let resultText = "";
+
+                if (playerShootingTurn) {
+                    if (isGoal) {
+                        score1++;
+                        resultText = "هدف يا لعيب!";
+                    } else {
+                        resultText = "معوض يا وحش!";
+                    }
                 } else {
-                    message = "معوض يا وحش!";
-                    isSuccess = false;
+                    if (isGoal) {
+                        score2++;
+                        resultText = "هدف للخصم!";
+                    } else {
+                        resultText = "تصدي كفو!";
+                    }
                 }
-            } else { // دوري: حراسة
-                if (result === 'goal') {
-                    scoreTeam2++;
-                    message = "هدف للخصم!";
-                    isSuccess = true;
-                } else {
-                    message = "تصدي كفو!";
-                    isSuccess = false;
-                }
-            }
 
-            // تحديث السكور فوراً
-            document.getElementById('score-team1').innerText = scoreTeam1;
-            document.getElementById('score-team2').innerText = scoreTeam2;
+                score1Display.innerText = score1;
+                score2Display.innerText = score2;
 
-            // إظهار الإشعار في منتصف الشاشة
-            showPopup(message, isSuccess);
+                setTimeout(() => {
+                    playerShootingTurn = !playerShootingTurn;
+                    resetPitch();
+                    
+                    arcadePopup.style.display = 'block';
+                    if (playerShootingTurn) {
+                        turnStatus.innerText = "دوري: شوط";
+                        turnStatus.style.color = "#2ecc71";
+                        arcadeMessage.innerHTML = `النتيجة السابقة: ${resultText}<br><br>اختر زاوية التسديد الآن:`;
+                    } else {
+                        turnStatus.innerText = "دوري: حارس";
+                        turnStatus.style.color = "#e74c3c";
+                        arcadeMessage.innerHTML = `النتيجة السابقة: ${resultText}<br><br>الخصم سيشوت! اختر اتجاه قفزة الحارس:`;
+                    }
+                    isWaitingForAction = true;
+                }, 2000);
 
-            // تبديل الأدوار بعد الركلة
-            isShooter = !isShooter;
-            if (isShooter) {
-                turnIndicator.innerText = "دوري: شوط";
-                turnIndicator.style.color = "#27ae60";
-            } else {
-                turnIndicator.innerText = "دوري: حارس";
-                turnIndicator.style.color = "#e74c3c";
-            }
+            }, 400);
         }
 
-        // وظيفة إظهار وإخفاء النافذة المنبثقة
-        function showPopup(text, isSuccess) {
-            popupText.innerText = text;
-            centralPopup.style.display = 'block';
-            if (isSuccess) {
-                centralPopup.classList.remove('failure');
-            } else {
-                centralPopup.classList.add('failure');
-            }
-
-            // إخفاء التنبيه تلقائياً بعد ثانيتين
-            setTimeout(() => {
-                centralPopup.style.display = 'none';
-            }, 2000);
+        function resetPitch() {
+            ball.style.transition = 'none';
+            ball.style.bottom = '12%';
+            ball.style.left = '50%';
+            ball.style.width = '50%';
+            setTimeout(() => ball.style.transition = 'all 0.4s ease-out', 50);
+            keeper.style.left = '50%';
         }
     </script>
 </body>
